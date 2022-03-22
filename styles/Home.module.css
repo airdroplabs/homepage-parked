@@ -108,6 +108,10 @@
   margin-left: 0.5rem;
 }
 
+.link:hover {
+  color: blue;
+}
+
 @media (max-width: 600px) {
   .grid {
     width: 100%;
