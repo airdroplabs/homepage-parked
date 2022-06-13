@@ -1,7 +1,33 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import { useState, useRef } from "react";
+
+import Head from "next/head";
+import styles from "../styles/Home.module.css";
+import validator from "validator";
+import axios from "axios";
 
 export default function Home() {
+  const inputRef = useRef(null);
+  const [email, setEmail] = useState("");
+  const [emailValid, setEmailValid] = useState(false);
+  const [placeHolder, setPlaceHolder] = useState("Email Address");
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (emailValid) {
+      axios.post("/api/email", { email });
+    }
+    setEmail("");
+    setEmailValid(false);
+    setPlaceHolder("Speak soon!");
+    inputRef.current.style.animation = "none";
+  };
+
+  const validateInput = (e) => {
+    var userInput = e.target.value;
+    setPlaceHolder("Email Address");
+    setEmail(userInput);
+    validator.isEmail(userInput) ? setEmailValid(true) : setEmailValid(false);
+  };
+
   return (
     <div className={styles.container}>
       <Head>
@@ -10,13 +36,32 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>
-          WAGMI.
-        </h1>
+        <h1 className={styles.title}>WAGMI.</h1>
         <h2>
-          <a href="https://jobs.gusto.com/boards/airdrop-labs-de232069-6209-49e9-8597-63ac9d858075" target="_blank" className={styles.link} rel="noreferrer">[We're Hiring]</a>
+          <a
+            href="https://jobs.gusto.com/boards/airdrop-labs-de232069-6209-49e9-8597-63ac9d858075"
+            target="_blank"
+            className={styles.link}
+            rel="noreferrer">
+            [We're Hiring]
+          </a>
         </h2>
+        <form className={styles.form} onSubmit={handleSubmit}>
+          <input
+            onChange={validateInput}
+            value={email}
+            className={styles.input}
+            ref={inputRef}
+            placeholder={placeHolder}
+            type="email"
+          />
+          <button
+            type="submit"
+            className={`${!emailValid && styles.input_hide} ${styles.button}`}>
+            Contact Us
+          </button>
+        </form>
       </main>
     </div>
-  )
+  );
 }
