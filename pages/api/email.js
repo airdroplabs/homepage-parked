@@ -2,8 +2,7 @@
 import isEmail from "validator/lib/isEmail";
 import axios from "axios";
 
-const DISCORD_WEBHOOK =
-  "https://discord.com/api/webhooks/985915018317013012/_0rXy-Onf5Ca65rdHRJRA-pAVEtWTKfLMvjCD6TZuLq0dDZQ39xLPs-sGdEC-OlZQ80A";
+const DISCORD_WEBHOOK = process.env.DISCORD_WEBHOOK ?? "";
 
 export default async function handler(req, res) {
   if (req?.method !== "POST") {
@@ -13,6 +12,12 @@ export default async function handler(req, res) {
     });
   }
 
+  if (!DISCORD_WEBHOOK) {
+    return res.status(500).json({
+      error: "Webhook Error",
+      message: "Could not get webhook URL",
+    });
+  }
   const { email } = req?.body;
 
   if (!isEmail(email)) {
@@ -40,7 +45,7 @@ export default async function handler(req, res) {
               }),
             },
           ],
-          color: Math.floor(Math.random() * 16777216),
+          color: Math.floor(Math.random() * (16777215 + 1)),
         },
       ],
     });
