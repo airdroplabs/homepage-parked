@@ -5,25 +5,27 @@ import styles from "../styles/Home.module.css";
 import validator from "validator";
 import axios from "axios";
 
+const PLACEHOLDER = "Drop your email for info";
+
 export default function Home() {
   const inputRef = useRef(null);
   const [email, setEmail] = useState("");
   const [emailValid, setEmailValid] = useState(false);
-  const [placeHolder, setPlaceHolder] = useState("Email Address");
+  const [placeHolder, setPlaceHolder] = useState(PLACEHOLDER);
   const handleSubmit = (e) => {
     e.preventDefault();
     if (emailValid) {
       axios.post("/api/email", { email });
+      setEmail("");
+      setEmailValid(false);
+      setPlaceHolder("Speak soon!");
+      inputRef.current.style.animation = "none";
     }
-    setEmail("");
-    setEmailValid(false);
-    setPlaceHolder("Speak soon!");
-    inputRef.current.style.animation = "none";
   };
 
   const validateInput = (e) => {
     var userInput = e.target.value;
-    setPlaceHolder("Email Address");
+    setPlaceHolder(PLACEHOLDER);
     setEmail(userInput);
     validator.isEmail(userInput) ? setEmailValid(true) : setEmailValid(false);
   };
